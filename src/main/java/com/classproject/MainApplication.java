@@ -6,11 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import static javafx.application.Application.launch;
-
-// Correct Inheritance and Interface Implementation
-public class MainApplication extends LocationPage implements LocationFileCreation {
-
+public class MainApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -26,24 +22,7 @@ public class MainApplication extends LocationPage implements LocationFileCreatio
     }
 
     public static void main(String[] args) {
-        // This launch() calls the one inherited from javafx.application.Application
+        // The main method launches the JavaFX application
         launch(args);
-    }
-
-    // --- Implementation of Abstract/Interface Methods (Leave empty for now) ---
-
-    @Override
-    public void locationFileCreation(String locationName) {
-        // TODO: File I/O logic goes here
-    }
-
-    @Override
-    public void addingRatingToFile(int rating) {
-        // TODO: File I/O logic goes here
-    }
-
-    @Override
-    public void displayLocationDetails() {
-        // TODO: JavaFX display logic goes here
     }
 }
