@@ -193,14 +193,28 @@ public class MainApplication extends LocationPage implements LocationFileCreatio
     // --- Interface methods ---
     @Override
     public void locationFileCreation(String locationName) {
-        try (java.io.FileWriter writer = new java.io.FileWriter("locations/" + locationName + ".txt")) {
-            writer.write("Location: " + locationName + "\n");
-            writer.write("Average Rating: 0\n");
-            writer.write("--- REVIEWS ---\n");
+        try {
+            // Create 'locations' folder if it doesn't exist
+            java.io.File folder = new java.io.File("locations");
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+
+            // Create the location file inside the folder
+            java.io.File file = new java.io.File(folder, locationName + ".txt");
+            if (!file.exists()) {
+                try (java.io.FileWriter writer = new java.io.FileWriter(file)) {
+                    writer.write("Location: " + locationName + "\n");
+                    writer.write("Average Rating: 0\n");
+                    writer.write("--- REVIEWS ---\n");
+                }
+            }
+
         } catch (java.io.IOException e) {
-            System.err.println("ERROR: Could not create file for " + locationName);
+            System.err.println("ERROR: Could not create file for " + locationName + ": " + e.getMessage());
         }
     }
+
 
     @Override
     public void addingRatingToFile(int rating) {
