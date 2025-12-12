@@ -6,220 +6,254 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.io.*;
+
 public class MainApplication extends LocationPage implements LocationFileCreation {
 
     private String[] locationNames = new String[10];
-    private int[] locationRatings = new int[10]; // Store ratings for simplicity
+    private int[] locationRatings = new int[10];
 
     public MainApplication() {
-        // Initialize some locations
-        locationNames[0] = "Eiffel Tower";
-        locationNames[1] = "Colosseum";
-        locationNames[2] = "Statue of Liberty";
-        locationRatings[0] = 5;
-        locationRatings[1] = 4;
-        locationRatings[2] = 3;
+        loadLocations(); // load saved or default locations
     }
 
     @Override
     public void start(Stage stage) {
+
         VBox root = new VBox(10);
         root.setStyle("-fx-padding: 20; -fx-alignment: top_center;");
 
         Label titleLabel = new Label("Travel Guide App");
         titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
 
-        // --- Search Section ---
+        // Search bar
         TextField searchBar = new TextField();
         searchBar.setPromptText("Enter location name to search");
-
         Button searchButton = new Button("Search");
 
+        // Location display box
         VBox resultsBox = new VBox(5);
         resultsBox.setStyle("-fx-padding: 10;");
-
-        displayAllLocations(resultsBox); // Show all locations initially
+        displayAllLocations(resultsBox);
 
         searchButton.setOnAction(e -> {
             String query = searchBar.getText().trim().toLowerCase();
             resultsBox.getChildren().clear();
 
             boolean found = false;
+
             for (int i = 0; i < locationNames.length; i++) {
-                if (locationNames[i] != null && locationNames[i].toLowerCase().contains(query)) {
-                    Button locationButton = createLocationButton(i);
-                    resultsBox.getChildren().add(locationButton);
+                if (locationNames[i] != null &&
+                        locationNames[i].toLowerCase().contains(query)) {
+
+                    resultsBox.getChildren().add(createLocationButton(i));
                     found = true;
                 }
             }
 
             if (!found) {
-                resultsBox.getChildren().add(new Label("Can’t find what you’re looking for"));
+                resultsBox.getChildren().add(new Label("Cannot find that location."));
             }
         });
 
-        // --- Add Location Section ---
+        // Add new location
         HBox addLocationBox = new HBox(10);
         TextField newLocationField = new TextField();
         newLocationField.setPromptText("Enter new location");
-        Button addLocationButton = new Button("Add Location");
+        Button addLocationButton = new Button("Add");
 
         addLocationBox.getChildren().addAll(newLocationField, addLocationButton);
 
         addLocationButton.setOnAction(e -> {
             String newLocation = newLocationField.getText().trim();
+
             if (newLocation.isEmpty()) {
-                Alert alert = new Alert(Alert.AlertType.WARNING, "Please enter a location name!");
-                alert.showAndWait();
+                new Alert(Alert.AlertType.WARNING, "Enter a location name!").showAndWait();
                 return;
             }
 
             boolean added = false;
-            for (int i = 0; i < locationNames.length; i++) {
-                if (locationNames[i] == null || locationNames[i].isEmpty()) {
-                    locationNames[i] = newLocation;
-                    locationRatings[i] = 0; // default rating
-                    Button newBtn = createLocationButton(i);
-                    resultsBox.getChildren().add(newBtn);
 
-                    locationFileCreation(newLocation); // create file
+            for (int i = 0; i < locationNames.length; i++) {
+                if (locationNames[i] == null) {
+                    locationNames[i] = newLocation;
+                    locationRatings[i] = 0;
+
+                    resultsBox.getChildren().add(createLocationButton(i));
+                    added = true;
+
+                    locationFileCreation(newLocation);
+                    saveLocations();
 
                     newLocationField.clear();
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Location added!");
-                    alert.showAndWait();
-                    added = true;
+                    new Alert(Alert.AlertType.INFORMATION, "Location added!").showAndWait();
                     break;
                 }
             }
 
             if (!added) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "No space to add new location!");
-                alert.showAndWait();
+                new Alert(Alert.AlertType.ERROR, "No space left for more locations!").showAndWait();
             }
         });
 
-        root.getChildren().addAll(titleLabel, searchBar, searchButton, resultsBox, new Label("Add a New Location:"), addLocationBox);
+        root.getChildren().addAll(
+                titleLabel, searchBar, searchButton,
+                resultsBox,
+                new Label("Add a New Location:"),
+                addLocationBox
+        );
 
-        Scene scene = new Scene(root, 500, 500);
         stage.setTitle("Travel Guide App");
-        stage.setScene(scene);
+        stage.setScene(new Scene(root, 500, 500));
         stage.show();
     }
 
-    // --- Helper Methods ---
-
-    // Display all locations on home screen
+    // Display all saved locations
     private void displayAllLocations(VBox box) {
+        box.getChildren().clear();
         for (int i = 0; i < locationNames.length; i++) {
-            if (locationNames[i] != null && !locationNames[i].isEmpty()) {
-                Button locationButton = createLocationButton(i);
-                box.getChildren().add(locationButton);
+            if (locationNames[i] != null) {
+                box.getChildren().add(createLocationButton(i));
             }
         }
     }
 
-    // Create a button for a location; clicking opens detail window
+    // Button for each location
     private Button createLocationButton(int index) {
         Button btn = new Button(locationNames[index] + " (Rating: " + locationRatings[index] + "/5)");
-        btn.setOnAction(e -> {
-            this.locationName = locationNames[index];
-            this.locationRatingAddition = locationRatings[index];
-            displayLocationDetails(btn, index); // Pass the button to update text after rating
-        });
+
+        btn.setOnAction(e -> displayLocationDetails(btn, index));
+
         return btn;
     }
 
-    // Required override to satisfy abstract class
-    @Override
-    public void displayLocationDetails() {
-        // This version is required but won't be called
-    }
-
-    // Display location details and allow adding a rating
-    private void displayLocationDetails(Button homeButton, int index) {
-        Stage detailStage = new Stage();
-
-        Label nameLabel = new Label("Location: " + this.locationName);
-        Label ratingLabel = new Label("Current Rating: " + this.locationRatingAddition + "/5");
-
-        Label addRatingLabel = new Label("Add a new rating (1-5):");
-        TextField ratingField = new TextField();
-        ratingField.setPromptText("Enter rating");
-
-        Button submitRatingButton = new Button("Submit Rating");
-
-        submitRatingButton.setOnAction(e -> {
-            String input = ratingField.getText().trim();
-            try {
-                int newRating = Integer.parseInt(input);
-                if (newRating < 1 || newRating > 5) {
-                    Alert alert = new Alert(Alert.AlertType.WARNING, "Rating must be between 1 and 5!");
-                    alert.showAndWait();
-                    return;
-                }
-
-                // Update rating array
-                locationRatings[index] = newRating;
-                this.locationRatingAddition = newRating;
-
-                // Update label
-                ratingLabel.setText("Current Rating: " + this.locationRatingAddition + "/5");
-
-                // Update button text on home screen
-                homeButton.setText(locationNames[index] + " (Rating: " + locationRatings[index] + "/5)");
-
-                addingRatingToFile(newRating);
-
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Rating added!");
-                alert.showAndWait();
-                ratingField.clear();
-
-            } catch (NumberFormatException ex) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a valid number!");
-                alert.showAndWait();
-            }
-        });
-
-        VBox layout = new VBox(10);
-        layout.setStyle("-fx-padding: 20;");
-        layout.getChildren().addAll(nameLabel, ratingLabel, addRatingLabel, ratingField, submitRatingButton);
-
-        Scene scene = new Scene(layout, 350, 250);
-        detailStage.setTitle("Location Details");
-        detailStage.setScene(scene);
-        detailStage.show();
-    }
-
-    // --- Interface methods ---
+    // Write a file for each location (simple version)
     @Override
     public void locationFileCreation(String locationName) {
-        try {
-            // Create 'locations' folder if it doesn't exist
-            java.io.File folder = new java.io.File("locations");
-            if (!folder.exists()) {
-                folder.mkdir();
-            }
+        File folder = new File("locations");
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
 
-            // Create the location file inside the folder
-            java.io.File file = new java.io.File(folder, locationName + ".txt");
-            if (!file.exists()) {
-                try (java.io.FileWriter writer = new java.io.FileWriter(file)) {
-                    writer.write("Location: " + locationName + "\n");
-                    writer.write("Average Rating: 0\n");
-                    writer.write("--- REVIEWS ---\n");
-                }
-            }
-
-        } catch (java.io.IOException e) {
-            System.err.println("ERROR: Could not create file for " + locationName + ": " + e.getMessage());
+        try (FileWriter writer = new FileWriter("locations/" + locationName + ".txt")) {
+            writer.write("Location: " + locationName + "\n");
+            writer.write("Rating: 0\n");
+        } catch (IOException e) {
+            System.err.println("Error creating file for: " + locationName);
         }
     }
 
-
     @Override
     public void addingRatingToFile(int rating) {
-        // For now, just update array rating (file write can be added later)
-        this.locationRatingAddition = rating;
+        // Not used in current version — ratings saved in saveLocations()
+    }
+
+    // Show individual location window
+    private void displayLocationDetails(Button homeButton, int index) {
+
+        Stage detailStage = new Stage();
+
+        Label nameLabel = new Label("Location: " + locationNames[index]);
+        Label ratingLabel = new Label("Current Rating: " + locationRatings[index] + "/5");
+
+        Label addRatingLabel = new Label("Add rating (1–5):");
+        TextField ratingField = new TextField();
+        Button submitRating = new Button("Submit");
+
+        submitRating.setOnAction(e -> {
+            try {
+                int newRating = Integer.parseInt(ratingField.getText());
+
+                if (newRating < 1 || newRating > 5) {
+                    new Alert(Alert.AlertType.WARNING, "Rating must be 1–5").showAndWait();
+                    return;
+                }
+
+                locationRatings[index] = newRating;
+                ratingLabel.setText("Current Rating: " + newRating + "/5");
+
+                homeButton.setText(locationNames[index] + " (Rating: " + newRating + "/5)");
+
+                saveLocations();
+
+                new Alert(Alert.AlertType.INFORMATION, "Rating updated!").showAndWait();
+
+            } catch (NumberFormatException ex) {
+                new Alert(Alert.AlertType.ERROR, "Enter a number 1–5!").showAndWait();
+            }
+        });
+
+        VBox layout = new VBox(10, nameLabel, ratingLabel, addRatingLabel, ratingField, submitRating);
+        layout.setStyle("-fx-padding: 20;");
+
+        detailStage.setScene(new Scene(layout, 300, 250));
+        detailStage.setTitle("Location Details");
+        detailStage.show();
+    }
+
+    // Save all locations to file
+    private void saveLocations() {
+        File folder = new File("locations");
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+
+        try (FileWriter writer = new FileWriter("locations/locations.txt")) {
+            for (int i = 0; i < locationNames.length; i++) {
+                if (locationNames[i] != null) {
+                    writer.write(locationNames[i] + "|" + locationRatings[i] + "\n");
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving locations.");
+        }
+    }
+
+    // Load locations, or defaults if file missing
+    private void loadLocations() {
+        File file = new File("locations/locations.txt");
+
+        if (!file.exists()) {
+            // Default starter locations
+            locationNames[0] = "Eiffel Tower";
+            locationRatings[0] = 5;
+
+            locationNames[1] = "Colosseum";
+            locationRatings[1] = 4;
+
+            locationNames[2] = "Statue of Liberty";
+            locationRatings[2] = 3;
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            int index = 0;
+
+            while ((line = reader.readLine()) != null && index < locationNames.length) {
+                String[] parts = line.split("\\|");
+                if (parts.length == 2) {
+                    locationNames[index] = parts[0];
+                    locationRatings[index] = Integer.parseInt(parts[1]);
+                }
+                index++;
+            }
+
+        } catch (IOException e) {
+            System.err.println("Error loading saved locations.");
+        }
+    }
+
+    /**
+     * Required override for the abstract method declared in LocationPage.
+     * This is a simple fallback handler; the actual detailed UI uses
+     * displayLocationDetails(Button, int).
+     */
+    @Override
+    public void displayLocationDetails() {
+        // Fallback: tell the user to pick a location from the home screen
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please select a location from the home screen to view details.");
+        alert.showAndWait();
     }
 
     public static void main(String[] args) {
