@@ -1,14 +1,25 @@
 package com.classproject;
 
 /**
- * Interface defining the required file I/O methods.
- * Demonstrates Interfaces (OOP concept) and Methods/Parameters.
+ * LocationFileCreation
+ * --------------------
+ * Interface that defines file-related operations for locations.
+ * This separates WHAT file actions are required from HOW they are implemented.
+ *
+ * Demonstrates:
+ * - Interfaces
+ * - Method declarations
+ * - Abstraction
  */
 public interface LocationFileCreation {
 
-    // Method to handle file creation and initial content.
+    /**
+     * Creates a file for a new location if it does not already exist.
+     */
     void locationFileCreation(String locationName);
 
-    // Method to add a rating to the file.
-    void addingRatingToFile(int rating);
+    /**
+     * Appends a rating and review to an existing location file.
+     */
+    void addingRatingToFile(String locationName, int rating, String review);
 }

@@ -1,29 +1,31 @@
 package com.classproject;
 
 import javafx.application.Application;
+import javafx.stage.Stage;
 
+/**
+ * LocationPage
+ * ------------
+ * Abstract class representing a page related to a single location.
+ *
+ * Enforces that all location pages must define how they are displayed.
+ * Provides shared variables and behavior.
+ */
 public abstract class LocationPage extends Application {
 
-// Variables required by your plan
-
-    protected String locationName; // Example of a variable
-
-    protected int locationRatingAddition; // Example of a variable
-
-
-
-// A concrete method that all children can use (Standardize formatting for each location)
+    protected String locationName;
+    protected int locationRatingAddition;
+    protected Stage stage;
 
     public void standardizeDisplayFormat() {
-
-        System.out.println("--- Displaying standardized format for: " + this.locationName + " ---");
-
+        System.out.println("--- Displaying standardized format for: " + locationName + " ---");
     }
-
-
-
-// An abstract method that FORCES child classes (like MainApplication) to implement specific display behavior
 
     public abstract void displayLocationDetails();
 
+    @Override
+    public void start(Stage stage) {
+        this.stage = stage;
+        displayLocationDetails();
+    }
 }
