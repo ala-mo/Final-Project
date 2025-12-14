@@ -1,4 +1,4 @@
-# Final-Project
+# Final-Project-My Travel Journal
 
 # Topic Integration
 1. Java Overview / JVM / OOP Concepts
