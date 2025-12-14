@@ -28,8 +28,9 @@ import java.util.Map;
 public class MainApplication extends Application {
 
     private Map<String, Location> locations = new HashMap<>();
-    
-    private Label clockLabel = new Label();
+
+    private static Label clockLabel = new Label();
+
 
     @Override
     public void start(Stage stage) {
