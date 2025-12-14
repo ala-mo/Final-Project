@@ -150,7 +150,7 @@ public class MainApplication extends Application {
         TextField rating = new TextField();
 
         name.setPromptText("Location Name");
-        desc.setPromptText("Description");
+        desc.setPromptText("Write your journal entry here...");
         rating.setPromptText("Initial Rating (1–5)");
 
         Label message = new Label();
