@@ -6,16 +6,13 @@ import java.util.*;
 /**
  * LocationFileManager
  * -------------------
- * Handles all file input/output for locations.
- * Implements LocationFileCreation interface.
- *
- * Responsibilities:
- * - Create files for locations
- * - Save location data
- * - Load location data on startup
- * - Delete location data when requested
- *
- * Keeps file logic separate from GUI logic.
+ * methods 
+     - LocationFileManager() ; checks to see if a file exists
+     - (overrided) LocationFileCreation(String locationName) ; uses interface method to create a location file
+     - (overrided) addingRatingToFile(String locationName, int rating, String review) ; uses interface method to add ratings and reviews to locations
+     - deleteLocationFile(String locationName) ; deletes location file
+     - saveLocationToFile(Location loc) ; updates location name, ratings, and reviews to file
+     - loadLocationFromFiles() ; loads location name and description from the file
  */
 public class LocationFileManager implements LocationFileCreation {
 
@@ -27,11 +24,6 @@ public class LocationFileManager implements LocationFileCreation {
             dir.mkdir();
         }
     }
-
-    /* =========================
-       INTERFACE METHODS
-       ========================= */
-
     @Override
     public void locationFileCreation(String locationName) {
         try {
@@ -56,25 +48,13 @@ public class LocationFileManager implements LocationFileCreation {
             System.out.println("Error writing rating.");
         }
     }
-
-    /* =========================
-       DELETE LOCATION (NEW)
-       ========================= */
-
-    /**
-     * Deletes the file associated with a location.
-     * Used when a user removes a location from their journal.
-     */
+    
     public static void deleteLocationFile(String locationName) {
         File file = new File(DATA_DIR + "/" + locationName + ".txt");
         if (file.exists()) {
             file.delete();
         }
     }
-
-    /* =========================
-       STATIC HELPERS
-       ========================= */
 
     public static void saveLocationToFile(Location loc) {
         try (BufferedWriter writer =
