@@ -16,22 +16,19 @@ import java.util.Map;
 /**
  * MainApplication
  * ----------------
- * Entry point of the program.
- *
- * PROGRAM FLOW:
- * 1. Load saved locations from files
- * 2. Display home screen with search
- * 3. Allow users to add locations
- * 4. Allow users to view and journal locations
- * 5. Display a real-time clock using multithreading
- *
- * Handles scene switching and user interaction.
+ * JavaFX features
+     - Label clockLabel ; label for the clock
+     - Scene buildHomeScene(Stage stage) ; setting the stage for the home page
+     - Scene buildAddLocationScene(Stage stage) ; setting the stage for the location page
+ * methods
+     - startClockThread() ; multithreading the clock
+     - populateSearchResults(VBox box, String query, Stage stage) ; search results
+     - Scene buildHomeSceneStatic(Stage stage) ; updates changes to the homepage upon return
  */
 public class MainApplication extends Application {
 
     private Map<String, Location> locations = new HashMap<>();
-
-    // Clock label updated by a background thread
+    
     private Label clockLabel = new Label();
 
     @Override
@@ -43,10 +40,6 @@ public class MainApplication extends Application {
 
         startClockThread();
     }
-
-    /* =========================
-       MULTITHREADED CLOCK
-       ========================= */
 
     private void startClockThread() {
         Thread clockThread = new Thread(() -> {
@@ -71,10 +64,6 @@ public class MainApplication extends Application {
         clockThread.setDaemon(true);
         clockThread.start();
     }
-
-    /* =========================
-       HOME SCREEN
-       ========================= */
 
     public Scene buildHomeScene(Stage stage) {
         VBox root = new VBox(15);
@@ -133,10 +122,6 @@ public class MainApplication extends Application {
             }
         }
     }
-
-    /* =========================
-       ADD LOCATION SCREEN
-       ========================= */
 
     private Scene buildAddLocationScene(Stage stage) {
         VBox root = new VBox(10);
@@ -202,10 +187,6 @@ public class MainApplication extends Application {
 
         return new Scene(root, 450, 540);
     }
-
-    /* =========================
-       STATIC HOME BUILDER
-       ========================= */
 
     public static Scene buildHomeSceneStatic(Stage stage) {
         MainApplication app = new MainApplication();
