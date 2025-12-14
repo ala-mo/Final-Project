@@ -9,12 +9,13 @@ import javafx.stage.Stage;
 /**
  * LocationDetailView
  * ------------------
- * Displays details for a single location.
- * Allows users to add a rating (1–5) and a text journal entry.
- * Displays all previously saved journal entries.
- *
- * This class represents the "individual location page"
- * described in the project rubric.
+ * JavaFX features
+     - display location page
+     - TextField ratingField ; input rating
+     - TextArea reviewField ; input entries / reviews for location
+     - Button submitBtn ; to submit entries to location page
+     - Button deleteBtn ; to delete the location
+     - Button backBtn ; to exit the location page to the main page
  */
 public class LocationDetailView extends LocationPage {
 
@@ -32,12 +33,8 @@ public class LocationDetailView extends LocationPage {
         VBox root = new VBox(12);
         root.setPadding(new Insets(20));
 
-        /* ---------- DISPLAY LOCATION NAME ---------- */
-
         Label nameLabel = new Label("Location: " + location.getName());
         nameLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-
-        /* ---------- DISPLAY JOURNAL ENTRIES ---------- */
 
         Label entriesTitle = new Label("Journal Entries:");
         entriesTitle.setStyle("-fx-font-weight: bold;");
@@ -58,8 +55,6 @@ public class LocationDetailView extends LocationPage {
             }
         }
 
-        /* ---------- INPUT FIELDS ---------- */
-
         TextField ratingField = new TextField();
         ratingField.setPromptText("Rate your experience (1–5)");
 
@@ -67,15 +62,11 @@ public class LocationDetailView extends LocationPage {
         reviewField.setPromptText("Write your journal entry here...");
         reviewField.setPrefRowCount(4);
 
-        /* ---------- BUTTONS ---------- */
-
         Button submitBtn = new Button("Add Journal Entry");
         Button deleteBtn = new Button("Delete Location");
         Button backBtn = new Button("Back");
 
         Label messageLabel = new Label();
-
-        /* ---------- SUBMIT LOGIC ---------- */
 
         submitBtn.setOnAction(e -> {
             String ratingText = ratingField.getText().trim();
@@ -98,13 +89,10 @@ public class LocationDetailView extends LocationPage {
                 return;
             }
 
-            // Add new journal entry
             location.addRating(rating, reviewText);
 
-            // Save changes to file
             LocationFileManager.saveLocationToFile(location);
 
-            // Update UI immediately
             entriesBox.getChildren().add(
                     new Label("⭐ " + rating + " — " + reviewText)
             );
@@ -114,8 +102,6 @@ public class LocationDetailView extends LocationPage {
             ratingField.clear();
             reviewField.clear();
         });
-
-        /* ---------- DELETE LOGIC ---------- */
 
         deleteBtn.setOnAction(e -> {
             Alert confirm = new Alert(
@@ -133,13 +119,9 @@ public class LocationDetailView extends LocationPage {
             }
         });
 
-        /* ---------- NAVIGATION ---------- */
-
         backBtn.setOnAction(e ->
                 stage.setScene(MainApplication.buildHomeSceneStatic(stage))
         );
-
-        /* ---------- LAYOUT ---------- */
 
         root.getChildren().addAll(
                 nameLabel,
