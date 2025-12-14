@@ -6,10 +6,9 @@ import javafx.stage.Stage;
 /**
  * LocationPage
  * ------------
- * Abstract class representing a page related to a single location.
- *
- * Enforces that all location pages must define how they are displayed.
- * Provides shared variables and behavior.
+ * methods
+     - standardizeDisplayFormat() ; emphasizes a standard display for all location pages
+     - displayLocationDetails() ; initialized
  */
 public abstract class LocationPage extends Application {
 
