@@ -9,12 +9,12 @@ import javafx.stage.Stage;
 /**
  * LocationDetailView
  * ------------------
- * Displays details for a single location.
- * Allows users to add a rating (1–5) and a text review.
- * Also allows users to delete a location from their journal.
- *
- * This class represents the "individual location page"
- * described in the project rubric.
+ * JavaFX features for Location Page
+     - TextField ratingField ; requests input for ratings
+     - TextArea reviewField ; requests input for reviews 
+     - Button submitBtn ; to submit input for review
+     - Button deleteBtn ; to delete location
+     - Button backBtn ; to exit page
  */
 public class LocationDetailView extends LocationPage {
 
@@ -32,8 +32,6 @@ public class LocationDetailView extends LocationPage {
         VBox root = new VBox(12);
         root.setPadding(new Insets(20));
 
-        /* ---------- DISPLAY CURRENT INFO ---------- */
-
         Label nameLabel = new Label("Location: " + location.getName());
         nameLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
@@ -42,9 +40,7 @@ public class LocationDetailView extends LocationPage {
         Label ratingLabel = new Label(
                 "Average Rating: " + String.format("%.1f", location.getRating())
         );
-
-        /* ---------- INPUT FIELDS ---------- */
-
+        
         TextField ratingField = new TextField();
         ratingField.setPromptText("Enter rating (1–5)");
 
@@ -52,17 +48,11 @@ public class LocationDetailView extends LocationPage {
         reviewField.setPromptText("Write your review here...");
         reviewField.setPrefRowCount(4);
 
-        /* ---------- BUTTONS ---------- */
-
         Button submitBtn = new Button("Submit Review");
         Button deleteBtn = new Button("Delete Location");
         Button backBtn = new Button("Back");
 
-     
-
         Label messageLabel = new Label();
-
-        /* ---------- SUBMIT LOGIC ---------- */
 
         submitBtn.setOnAction(e -> {
             String ratingText = ratingField.getText().trim();
@@ -102,8 +92,6 @@ public class LocationDetailView extends LocationPage {
             reviewField.clear();
         });
 
-        /* ---------- DELETE LOGIC ---------- */
-
         deleteBtn.setOnAction(e -> {
             Alert confirm = new Alert(
                     Alert.AlertType.CONFIRMATION,
@@ -120,13 +108,9 @@ public class LocationDetailView extends LocationPage {
             }
         });
 
-        /* ---------- NAVIGATION ---------- */
-
         backBtn.setOnAction(e ->
                 stage.setScene(MainApplication.buildHomeSceneStatic(stage))
         );
-
-        /* ---------- LAYOUT ---------- */
 
         root.getChildren().addAll(
                 nameLabel,
