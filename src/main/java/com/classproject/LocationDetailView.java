@@ -11,7 +11,7 @@ import javafx.stage.Stage;
  * ------------------
  * Displays details for a single location.
  * Allows users to add a rating (1–5) and a text review.
- * Also allows users to delete a location from their journal.
+ * Displays all previously saved journal entries (ratings + reflections).
  *
  * This class represents the "individual location page"
  * described in the project rubric.
@@ -32,33 +32,48 @@ public class LocationDetailView extends LocationPage {
         VBox root = new VBox(12);
         root.setPadding(new Insets(20));
 
-        /* ---------- DISPLAY CURRENT INFO ---------- */
+        /* ---------- DISPLAY LOCATION INFO ---------- */
 
         Label nameLabel = new Label("Location: " + location.getName());
         nameLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
 
         Label descLabel = new Label("Description: " + location.getDescription());
 
-        Label ratingLabel = new Label(
-                "Average Rating: " + String.format("%.1f", location.getRating())
-        );
+        /* ---------- DISPLAY JOURNAL ENTRIES ---------- */
+
+        Label entriesTitle = new Label("Journal Entries:");
+        entriesTitle.setStyle("-fx-font-weight: bold;");
+
+        VBox entriesBox = new VBox(5);
+
+        int[] ratings = location.getRatings();
+        String[] reviews = location.getReviews();
+
+        if (ratings.length == 0) {
+            entriesBox.getChildren().add(new Label("No journal entries yet."));
+        } else {
+            for (int i = 0; i < ratings.length; i++) {
+                Label entryLabel = new Label(
+                        "⭐ " + ratings[i] + " — " + reviews[i]
+                );
+                entriesBox.getChildren().add(entryLabel);
+            }
+        }
 
         /* ---------- INPUT FIELDS ---------- */
 
         TextField ratingField = new TextField();
-        ratingField.setPromptText("Enter rating (1–5)");
+        ratingField.setPromptText("Rate your experience (1–5)");
 
         TextArea reviewField = new TextArea();
-        reviewField.setPromptText("Write your review here...");
+        reviewField.setPromptText("Write your journal entry here...");
         reviewField.setPrefRowCount(4);
 
         /* ---------- BUTTONS ---------- */
 
-        Button submitBtn = new Button("Submit Review");
+        Button submitBtn = new Button("Add Journal Entry");
         Button deleteBtn = new Button("Delete Location");
         Button backBtn = new Button("Back");
-
-     
 
         Label messageLabel = new Label();
 
@@ -69,7 +84,7 @@ public class LocationDetailView extends LocationPage {
             String reviewText = reviewField.getText().trim();
 
             if (ratingText.isEmpty() || reviewText.isEmpty()) {
-                messageLabel.setText("Please enter both a rating and a review.");
+                messageLabel.setText("Please enter both a rating and a journal entry.");
                 return;
             }
 
@@ -85,18 +100,18 @@ public class LocationDetailView extends LocationPage {
                 return;
             }
 
-            // Update location data
+            // Add new journal entry
             location.addRating(rating, reviewText);
 
             // Save changes to file
             LocationFileManager.saveLocationToFile(location);
 
-            // Update display
-            ratingLabel.setText(
-                    "Average Rating: " + String.format("%.1f", location.getRating())
+            // Update UI immediately
+            entriesBox.getChildren().add(
+                    new Label("⭐ " + rating + " — " + reviewText)
             );
 
-            messageLabel.setText("Review added successfully!");
+            messageLabel.setText("Journal entry added successfully!");
 
             ratingField.clear();
             reviewField.clear();
@@ -131,7 +146,8 @@ public class LocationDetailView extends LocationPage {
         root.getChildren().addAll(
                 nameLabel,
                 descLabel,
-                ratingLabel,
+                entriesTitle,
+                entriesBox,
                 ratingField,
                 reviewField,
                 submitBtn,
