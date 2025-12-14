@@ -5,14 +5,14 @@ package com.classproject;
  * --------
  * initializing variables for location
      - String name (location name)
-     - String description (review for location)
+     - String description (description for location)
      - int ratingCount (number for rating)
  * initializing arrays for location
      - int[] ratings (to hold all of the inputted ratings)
      - String[] reviews (to hold all of the inputted reviews)
  * methods 
-     - Location(String name, String description) ; to store location name and review
-     - addRating(int rating, String review) ; storing ratings into array
+     - Location(String name, String description) ; to store location name and description
+     - addRating(int rating, String review) ; storing ratings and reviews into array
      - double getRating() ; returns the average of the ratings for each location
      - String getName() ; returns private String name
      - String getDescription() ; return private String description
