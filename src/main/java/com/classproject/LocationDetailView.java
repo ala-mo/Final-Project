@@ -10,8 +10,8 @@ import javafx.stage.Stage;
  * LocationDetailView
  * ------------------
  * Displays details for a single location.
- * Allows users to add a rating (1–5) and a text review.
- * Displays all previously saved journal entries (ratings + reflections).
+ * Allows users to add a rating (1–5) and a text journal entry.
+ * Displays all previously saved journal entries.
  *
  * This class represents the "individual location page"
  * described in the project rubric.
@@ -32,12 +32,10 @@ public class LocationDetailView extends LocationPage {
         VBox root = new VBox(12);
         root.setPadding(new Insets(20));
 
-        /* ---------- DISPLAY LOCATION INFO ---------- */
+        /* ---------- DISPLAY LOCATION NAME ---------- */
 
         Label nameLabel = new Label("Location: " + location.getName());
         nameLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
-
-        Label descLabel = new Label("Description: " + location.getDescription());
 
         /* ---------- DISPLAY JOURNAL ENTRIES ---------- */
 
@@ -145,7 +143,6 @@ public class LocationDetailView extends LocationPage {
 
         root.getChildren().addAll(
                 nameLabel,
-                descLabel,
                 entriesTitle,
                 entriesBox,
                 ratingField,
