@@ -13,6 +13,7 @@ import java.util.*;
  * - Create files for locations
  * - Save location data
  * - Load location data on startup
+ * - Delete location data when requested
  *
  * Keeps file logic separate from GUI logic.
  */
@@ -53,6 +54,21 @@ public class LocationFileManager implements LocationFileCreation {
 
         } catch (IOException e) {
             System.out.println("Error writing rating.");
+        }
+    }
+
+    /* =========================
+       DELETE LOCATION (NEW)
+       ========================= */
+
+    /**
+     * Deletes the file associated with a location.
+     * Used when a user removes a location from their journal.
+     */
+    public static void deleteLocationFile(String locationName) {
+        File file = new File(DATA_DIR + "/" + locationName + ".txt");
+        if (file.exists()) {
+            file.delete();
         }
     }
 

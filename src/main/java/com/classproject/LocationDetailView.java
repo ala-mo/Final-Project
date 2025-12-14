@@ -11,6 +11,7 @@ import javafx.stage.Stage;
  * ------------------
  * Displays details for a single location.
  * Allows users to add a rating (1–5) and a text review.
+ * Also allows users to delete a location from their journal.
  *
  * This class represents the "individual location page"
  * described in the project rubric.
@@ -54,7 +55,10 @@ public class LocationDetailView extends LocationPage {
         /* ---------- BUTTONS ---------- */
 
         Button submitBtn = new Button("Submit Review");
+        Button deleteBtn = new Button("Delete Location");
         Button backBtn = new Button("Back");
+
+
 
         Label messageLabel = new Label();
 
@@ -98,6 +102,24 @@ public class LocationDetailView extends LocationPage {
             reviewField.clear();
         });
 
+        /* ---------- DELETE LOGIC ---------- */
+
+        deleteBtn.setOnAction(e -> {
+            Alert confirm = new Alert(
+                    Alert.AlertType.CONFIRMATION,
+                    "Are you sure you want to delete this location?",
+                    ButtonType.YES,
+                    ButtonType.NO
+            );
+
+            confirm.showAndWait();
+
+            if (confirm.getResult() == ButtonType.YES) {
+                LocationFileManager.deleteLocationFile(location.getName());
+                stage.setScene(MainApplication.buildHomeSceneStatic(stage));
+            }
+        });
+
         /* ---------- NAVIGATION ---------- */
 
         backBtn.setOnAction(e ->
@@ -113,6 +135,7 @@ public class LocationDetailView extends LocationPage {
                 ratingField,
                 reviewField,
                 submitBtn,
+                deleteBtn,
                 backBtn,
                 messageLabel
         );
