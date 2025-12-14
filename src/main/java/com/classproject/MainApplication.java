@@ -22,7 +22,7 @@ import java.util.Map;
  * 1. Load saved locations from files
  * 2. Display home screen with search
  * 3. Allow users to add locations
- * 4. Allow users to view and review locations
+ * 4. Allow users to view and journal locations
  * 5. Display a real-time clock using multithreading
  *
  * Handles scene switching and user interaction.
@@ -71,7 +71,7 @@ public class MainApplication extends Application {
             }
         });
 
-        clockThread.setDaemon(true); // stops when app closes
+        clockThread.setDaemon(true);
         clockThread.start();
     }
 
@@ -86,7 +86,6 @@ public class MainApplication extends Application {
         Label title = new Label("My Travel Journal");
         title.setStyle("-fx-font-size: 26px; -fx-font-weight: bold;");
 
-        // ✅ SUBTITLE ADDED HERE
         Label subtitle = new Label("Save places you’ve been and reflect on your experiences");
         subtitle.setStyle("-fx-text-fill: gray; -fx-font-size: 14px;");
 
@@ -113,8 +112,8 @@ public class MainApplication extends Application {
 
         root.getChildren().addAll(
                 title,
-                subtitle,     // 👈 subtitle placed under title
-                clockLabel,   // 👈 clock below subtitle
+                subtitle,
+                clockLabel,
                 searchField,
                 searchBtn,
                 addBtn,
@@ -129,9 +128,14 @@ public class MainApplication extends Application {
 
         for (Location loc : locations.values()) {
             if (query == null || loc.getName().toLowerCase().contains(query)) {
-                Button btn = new Button(loc.getName() + " (⭐ " + loc.getRating() + ")");
+
+                // ✅ ONLY show location name (no rating on homepage)
+                Button btn = new Button(loc.getName());
+
                 btn.setOnAction(e ->
-                        new LocationDetailView(stage, loc).displayLocationDetails());
+                        new LocationDetailView(stage, loc).displayLocationDetails()
+                );
+
                 box.getChildren().add(btn);
             }
         }
@@ -150,7 +154,7 @@ public class MainApplication extends Application {
         TextField rating = new TextField();
 
         name.setPromptText("Location Name");
-        desc.setPromptText("Write your journal entry here...");
+        desc.setPromptText("Description");
         rating.setPromptText("Initial Rating (1–5)");
 
         Label message = new Label();
@@ -160,7 +164,6 @@ public class MainApplication extends Application {
         save.setOnAction(e -> {
             try {
                 Location loc = new Location(name.getText(), desc.getText());
-                loc.addRating(Integer.parseInt(rating.getText()), desc.getText());
                 locations.put(loc.getName(), loc);
                 LocationFileManager.saveLocationToFile(loc);
                 message.setText("Location added!");
