@@ -9,8 +9,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * ClockService
  * ------------
- * Runs a background thread that updates a clock label every second.
- * Demonstrates multithreading in a simple and visible way.
+ * Global Clock
  */
 public class ClockService {
 
