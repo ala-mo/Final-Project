@@ -18,12 +18,13 @@ public class LocationFileManager implements LocationFileCreation {
 
     private static final String DATA_DIR = "locations";
 
-    public LocationFileManager() {
+    static {
         File dir = new File(DATA_DIR);
         if (!dir.exists()) {
             dir.mkdir();
         }
     }
+
     @Override
     public void locationFileCreation(String locationName) {
         try {
