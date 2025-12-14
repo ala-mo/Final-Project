@@ -58,7 +58,7 @@ public class LocationDetailView extends LocationPage {
         Button deleteBtn = new Button("Delete Location");
         Button backBtn = new Button("Back");
 
-
+     
 
         Label messageLabel = new Label();
 
