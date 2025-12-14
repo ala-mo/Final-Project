@@ -3,22 +3,27 @@ package com.classproject;
 /**
  * Location
  * --------
- * Data model representing a travel location.
- *
- * Responsibilities:
- * - Store name and description
- * - Store ratings and reviews using arrays
- * - Calculate average rating
- *
- * This class contains NO GUI code and NO file-handling code.
- * Demonstrates encapsulation and object-oriented design.
+ * initializing variables for location
+     - String name (location name)
+     - String description (review for location)
+     - int ratingCount (number for rating)
+ * initializing arrays for location
+     - int[] ratings (to hold all of the inputted ratings)
+     - String[] reviews (to hold all of the inputted reviews)
+ * methods 
+     - Location(String name, String description) ; to store location name and review
+     - addRating(int rating, String review) ; storing ratings into array
+     - double getRating() ; returns the average of the ratings for each location
+     - String getName() ; returns private String name
+     - String getDescription() ; return private String description
+     - int[] getRatings() ; takes user's rating and displays using JavaFX
+     - String[] getReviews() ; takes user's review and displays using JavaFX
  */
 public class Location {
 
     private String name;
     private String description;
 
-    // Arrays used instead of ArrayLists (per course requirements)
     private int[] ratings = new int[100];
     private String[] reviews = new String[100];
     private int ratingCount = 0;
@@ -28,11 +33,7 @@ public class Location {
         this.description = description;
     }
 
-    /* =========================
-       RATING LOGIC
-       ========================= */
-
-    public void addRating(int rating, String review) {
+    public void addRating(int rating, String review) { 
         if (ratingCount < ratings.length) {
             ratings[ratingCount] = rating;
             reviews[ratingCount] = review;
@@ -49,10 +50,6 @@ public class Location {
         return (double) sum / ratingCount;
     }
 
-    /* =========================
-       GETTERS
-       ========================= */
-
     public String getName() {
         return name;
     }
@@ -61,7 +58,7 @@ public class Location {
         return description;
     }
 
-    public int[] getRatings() {
+    public int[] getRatings() { 
         int[] copy = new int[ratingCount];
         System.arraycopy(ratings, 0, copy, 0, ratingCount);
         return copy;
