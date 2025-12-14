@@ -151,11 +151,9 @@ public class MainApplication extends Application {
 
         TextField name = new TextField();
         TextArea desc = new TextArea();
-        TextField rating = new TextField();
 
         name.setPromptText("Location Name");
         desc.setPromptText("Description");
-        rating.setPromptText("Initial Rating (1–5)");
 
         Label message = new Label();
         Button save = new Button("Save");
@@ -174,7 +172,7 @@ public class MainApplication extends Application {
 
         back.setOnAction(e -> stage.setScene(buildHomeScene(stage)));
 
-        root.getChildren().addAll(name, desc, rating, save, back, message);
+        root.getChildren().addAll(name, desc, save, back, message);
         return new Scene(root, 450, 520);
     }
 
