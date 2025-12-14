@@ -41,7 +41,6 @@ public class MainApplication extends Application {
         stage.setScene(buildHomeScene(stage));
         stage.show();
 
-        // Start the multithreaded clock
         startClockThread();
     }
 
@@ -50,7 +49,6 @@ public class MainApplication extends Application {
        ========================= */
 
     private void startClockThread() {
-
         Thread clockThread = new Thread(() -> {
             DateTimeFormatter formatter =
                     DateTimeFormatter.ofPattern("hh:mm:ss a");
@@ -58,13 +56,12 @@ public class MainApplication extends Application {
             while (true) {
                 String currentTime = LocalTime.now().format(formatter);
 
-                // Update JavaFX UI safely
                 Platform.runLater(() ->
                         clockLabel.setText("Current Time: " + currentTime)
                 );
 
                 try {
-                    Thread.sleep(1000); // update every second
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     break;
                 }
@@ -128,14 +125,10 @@ public class MainApplication extends Application {
 
         for (Location loc : locations.values()) {
             if (query == null || loc.getName().toLowerCase().contains(query)) {
-
-                // ✅ ONLY show location name (no rating on homepage)
                 Button btn = new Button(loc.getName());
-
                 btn.setOnAction(e ->
                         new LocationDetailView(stage, loc).displayLocationDetails()
                 );
-
                 box.getChildren().add(btn);
             }
         }
@@ -149,31 +142,65 @@ public class MainApplication extends Application {
         VBox root = new VBox(10);
         root.setPadding(new Insets(20));
 
-        TextField name = new TextField();
-        TextArea desc = new TextArea();
+        TextField nameField = new TextField();
+        TextField ratingField = new TextField();
+        TextArea entryField = new TextArea();
 
-        name.setPromptText("Location Name");
-        desc.setPromptText("Add your first entry...");
+        nameField.setPromptText("Location Name");
+        ratingField.setPromptText("Initial rating (1–5)");
+        entryField.setPromptText("Add your first journal entry...");
+        entryField.setPrefRowCount(4);
 
         Label message = new Label();
         Button save = new Button("Save");
         Button back = new Button("Back");
 
         save.setOnAction(e -> {
-            try {
-                Location loc = new Location(name.getText(), desc.getText());
-                locations.put(loc.getName(), loc);
-                LocationFileManager.saveLocationToFile(loc);
-                message.setText("Location added!");
-            } catch (Exception ex) {
-                message.setText("Invalid input.");
+            String name = nameField.getText().trim();
+            String entryText = entryField.getText().trim();
+            String ratingText = ratingField.getText().trim();
+
+            if (name.isEmpty() || entryText.isEmpty() || ratingText.isEmpty()) {
+                message.setText("Please fill in all fields.");
+                return;
             }
+
+            int rating;
+            try {
+                rating = Integer.parseInt(ratingText);
+                if (rating < 1 || rating > 5) {
+                    message.setText("Rating must be between 1 and 5.");
+                    return;
+                }
+            } catch (NumberFormatException ex) {
+                message.setText("Rating must be a number.");
+                return;
+            }
+
+            Location loc = new Location(name, "");
+            loc.addRating(rating, entryText);
+
+            locations.put(loc.getName(), loc);
+            LocationFileManager.saveLocationToFile(loc);
+
+            message.setText("Location added!");
+            nameField.clear();
+            ratingField.clear();
+            entryField.clear();
         });
 
         back.setOnAction(e -> stage.setScene(buildHomeScene(stage)));
 
-        root.getChildren().addAll(name, desc, save, back, message);
-        return new Scene(root, 450, 520);
+        root.getChildren().addAll(
+                nameField,
+                ratingField,
+                entryField,
+                save,
+                back,
+                message
+        );
+
+        return new Scene(root, 450, 540);
     }
 
     /* =========================
@@ -184,5 +211,9 @@ public class MainApplication extends Application {
         MainApplication app = new MainApplication();
         app.locations = LocationFileManager.loadLocationsFromFiles();
         return app.buildHomeScene(stage);
+    }
+
+    public static void main(String[] args) {
+        launch();
     }
 }
