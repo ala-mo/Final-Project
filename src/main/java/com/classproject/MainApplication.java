@@ -185,8 +185,4 @@ public class MainApplication extends Application {
         app.locations = LocationFileManager.loadLocationsFromFiles();
         return app.buildHomeScene(stage);
     }
-
-    public static void main(String[] args) {
-        launch();
-    }
 }
