@@ -153,7 +153,7 @@ public class MainApplication extends Application {
         TextArea desc = new TextArea();
 
         name.setPromptText("Location Name");
-        desc.setPromptText("Description");
+        desc.setPromptText("Add your first entry...");
 
         Label message = new Label();
         Button save = new Button("Save");
