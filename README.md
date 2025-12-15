@@ -79,4 +79,4 @@
     - (LocationDetailView.java)
          - <img width="527" height="541" src="screenshots/LocationPage.webp" />
     - (MainApplication.java ; lines 68-110, 126-189, 191-195)
-         - <img width="527" height="541" src="App_Main_page.webp" />
+         - <img width="527" height="541" src="screenshots/App_Main_page.webp" />
