@@ -36,7 +36,7 @@
    - Location(String name, String description) (Location.java ; line 31)
    - addRating(int rating, String review) (Location.java ; line 44)
    - startClockThread() (MainApplication.java ; line 44)
-   - deleteLocationFile(String locationName) (LocationFileCreation.java ; line 53)
+   - deleteLocationFile(String locationName) (LocationFileManager.java ; line 53)
         - <img width="527" height="541" src="screenshots/Screenshot 2025-12-14 7.28.01 PM.png" />
 6. Arrays
    -
