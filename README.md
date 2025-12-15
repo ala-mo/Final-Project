@@ -20,13 +20,13 @@
    -
    - for loops
         - (Location.java ; line 47)
-        - (LocationFileCreation.java ; lines 71, 88)
+        - (LocationFileManager.java ; lines 71, 88)
    - if loops / statements
         - (Location.java ; lines 37, 45)
-        - (LocationFileCreation.java ; lines 23, 31)
+        - (LocationFileManager.java ; lines 23, 31)
    - <img width="527" height="541" src="screenshots/Screenshot 2025-12-14 7.03.02 PM.png" />
    - try-catch 
-        - (LocationFileCreation.java ; lines 29, 41, 60
+        - (LocationFileManager.java ; lines 29, 41, 60
         - (MainApplication.java ; line 56)
    - while loop (MainApplication.java ; line 233)
         - (LocationFileCreation.java ; line 96)
